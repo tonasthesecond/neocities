@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jonas' pocket dimension</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="shell">
+      <div id="inner">
+        <div id="site-name">jonas</div>
+        <div id="input-row">
+          <span id="prompt">&gt;</span>
+          <input
+            id="query"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="type to navigate..."
+          />
+        </div>
+        <ul id="results"></ul>
+        <div id="no-results">no match</div>
+        <div id="hint">
+          <span>↑↓</span> navigate &nbsp;<span>↵</span> open &nbsp;<span
+            >esc</span
+          >
+          clear
+        </div>
+      </div>
+    </div>
+    <script src="scripts/nav.js"></script>
+  </body>
+</html>

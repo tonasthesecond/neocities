@@ -1,0 +1,8 @@
+node_modules/
+.git/
+.scripts/
+package.json
+package-lock.json
+jsconfig.json
+page_template.html
+export.js
