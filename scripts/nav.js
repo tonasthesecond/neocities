@@ -1,21 +1,9 @@
-const PINNED = [
-  {
-    cmd: "about me",
-    desc: "labels i place upon myself",
-    url: "../pages/about.html",
-  },
-  { cmd: "projects", desc: "things i've worked on", url: "../pages/work.html" },
-  {
-    cmd: "thoughts",
-    desc: "the musings of my mind",
-    url: "../pages/writing.html",
-  },
-  { cmd: "contact", desc: "ways to reach me", url: "../pages/contact.html" },
-  { cmd: "now", desc: "the nearest present", url: "../pages/now.html" },
-];
+const config = JSON.parse(document.getElementById("nav-config").textContent);
+const PINNED_URLS = config.pinnedUrls;
+const manualItems = config.manualItems;
 
-let EXTRAS = [];
-let filtered = [...PINNED];
+let items = [];
+let filtered = [];
 let cursor = 0;
 
 const query = document.getElementById("query");
@@ -25,9 +13,21 @@ const noResults = document.getElementById("no-results");
 fetch("/indices.json")
   .then((res) => res.json())
   .then((data) => {
-    EXTRAS = data.filter((e) => !PINNED.some((p) => p.url === e.url));
+    const fileItems = data.map((entry) => ({
+      title: entry.title.toLowerCase(),
+      description: entry["export-description"] || entry["note-type"] || "",
+      url: entry.url,
+      pinned: PINNED_URLS.includes(entry.url),
+    }));
+    items = [...manualItems, ...fileItems];
+    items.sort((a, b) => {
+      if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+      return a.title.localeCompare(b.title);
+    });
+
+    filter("");
   })
-  .catch(() => {});
+  .catch((err) => console.error("Nav load failed:", err));
 
 function highlight(str, q) {
   if (!q) return str;
@@ -42,6 +42,8 @@ function highlight(str, q) {
 
 function render() {
   list.innerHTML = "";
+  if (!noResults) return;
+
   noResults.style.display = filtered.length ? "none" : "block";
   const q = query.value.trim();
 
@@ -49,8 +51,10 @@ function render() {
     const li = document.createElement("li");
     if (i === cursor) li.classList.add("active");
 
-    const descSpan = p.desc ? `<span class="desc">${p.desc}</span>` : "";
-    li.innerHTML = `<span class="cmd">${highlight(p.cmd, q)}</span>${descSpan}`;
+    const subtext = p.description
+      ? `<span class="desc">${p.description}</span>`
+      : "";
+    li.innerHTML = `<span class="cmd">${highlight(p.title, q)}</span>${subtext}`;
 
     li.onclick = () => go(p.url);
     li.onmouseenter = () => {
@@ -62,14 +66,12 @@ function render() {
 }
 
 function filter(q) {
-  const t = q.trim().toLowerCase();
-  if (!t) {
-    filtered = [...PINNED];
-  } else {
-    const pm = PINNED.filter((p) => p.cmd.includes(t) || p.desc.includes(t));
-    const em = EXTRAS.filter((p) => p.cmd.includes(t) || p.desc.includes(t));
-    filtered = [...pm, ...em];
-  }
+  const t = (q || "").trim().toLowerCase();
+  filtered = items.filter(
+    (p) =>
+      p.title.toLowerCase().includes(t) ||
+      p.description.toLowerCase().includes(t),
+  );
   cursor = 0;
   render();
 }
@@ -79,6 +81,7 @@ function go(url) {
 }
 
 query.addEventListener("input", (e) => filter(e.target.value));
+
 query.addEventListener("keydown", (e) => {
   if (e.key === "ArrowDown") {
     e.preventDefault();
@@ -96,5 +99,5 @@ query.addEventListener("keydown", (e) => {
   }
 });
 
-render();
+// Initial Focus
 query.focus();

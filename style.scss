@@ -1,0 +1,279 @@
+@use "sass:color";
+
+// ── Variables ──
+$bg: #0a0a0a;
+$fg: #e2ddd5;
+$muted: #6b6660;
+$accent: #c8a96e;
+$hover: #1a1814;
+$border: #222;
+$font-main: "PixelCode", monospace;
+
+@font-face {
+  font-family: "PixelCode";
+  src: url("assets/PixelCode.otf");
+}
+
+%no-select {
+  user-select: none;
+}
+
+// ── Base ──
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: $bg;
+  color: $fg;
+  font-family: $font-main;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  /* Body is now a normal block. This lets margin: auto work. */
+}
+
+// ── Navigator (The Home/Search Shell) ──
+#shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; // Centers the search box vertically
+  padding: 2rem;
+
+  #inner {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  #site-name {
+    color: $muted;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    margin-bottom: 2.5rem;
+    @extend %no-select;
+  }
+}
+
+#input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid $border;
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.5rem;
+
+  #prompt {
+    color: $accent;
+    @extend %no-select;
+  }
+
+  #query {
+    background: none;
+    border: none;
+    outline: none;
+    color: $fg;
+    font-family: $font-main;
+    font-size: 14px;
+    width: 100%;
+    caret-color: $accent;
+    &::placeholder {
+      color: $muted;
+    }
+  }
+}
+
+#results-container {
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+}
+
+#results {
+  list-style: none;
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 3px;
+    cursor: pointer;
+    .cmd {
+      color: $fg;
+      min-width: 120px;
+      font-size: 13px;
+    }
+    .desc {
+      color: $muted;
+      font-size: 12px;
+    }
+    &.active,
+    &:hover {
+      background: $hover;
+      .cmd {
+        color: $accent;
+      }
+    }
+  }
+}
+
+#no-results {
+  color: $muted;
+  font-size: 12px;
+  padding: 0.5rem;
+}
+
+.match {
+  color: $accent;
+}
+
+// ── Pages (The Actual Notes) ──
+.page-wrap {
+  display: block;
+  width: 90%;
+  max-width: 650px; // The content cap
+  margin: 0 auto; // Centers the column on the screen
+  padding: 4rem 1rem;
+
+  .back {
+    display: inline-block;
+    color: $muted;
+    text-decoration: none;
+    font-size: 11px;
+    margin-bottom: 3rem;
+    letter-spacing: 0.06em;
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  h1 {
+    font-size: 16px;
+    font-weight: 500;
+    color: $accent;
+    margin-bottom: 1.5rem;
+  }
+  h2 {
+    font-size: 13px;
+    font-weight: 500;
+    color: $muted;
+    margin: 2rem 0 0.8rem;
+    letter-spacing: 0.08em;
+  }
+  p {
+    font-size: 13px;
+    line-height: 1.9;
+    margin-bottom: 0.8rem;
+  }
+
+  a {
+    color: $accent;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin-bottom: 1rem;
+    li {
+      font-size: 13px;
+      line-height: 1.9;
+      &::before {
+        content: "— ";
+        color: $muted;
+      }
+    }
+  }
+}
+
+// ── Metadata Box ──
+.frontmatter-box {
+  border: 1px solid #333;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background: color.adjust($bg, $lightness: 2%);
+
+  h1 {
+    margin: 0 0 1rem 0;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    color: $fg; // Keeps title distinct from page body h1
+  }
+
+  .meta-column {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .meta-item {
+      font-size: 11px;
+      display: flex;
+      gap: 10px;
+      b {
+        color: $accent;
+        text-transform: uppercase;
+        font-size: 10px;
+        min-width: 80px;
+      }
+      span {
+        color: $muted;
+      }
+    }
+  }
+}
+
+.hub-list {
+  margin-top: 2rem;
+
+  .hub-item {
+    display: flex;
+    flex-direction: column;
+    border-left: 2px solid $border;
+    padding-left: 1.5rem;
+    margin-bottom: 2.5rem;
+
+    .hub-title {
+      display: inline-block;
+      width: fit-content;
+      color: $accent;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+
+      &:hover {
+        text-decoration: underline;
+        opacity: 0.8;
+      }
+    }
+
+    .hub-meta {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 11px;
+      color: $muted;
+
+      .hub-desc {
+        color: $fg;
+        opacity: 0.6;
+      }
+
+      .hub-date {
+        font-family: monospace;
+        &::before {
+          content: "[";
+        }
+        &::after {
+          content: "]";
+        }
+      }
+    }
+  }
+}

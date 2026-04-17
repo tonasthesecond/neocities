@@ -20,8 +20,10 @@
             placeholder="type to navigate..."
           />
         </div>
-        <ul id="results"></ul>
-        <div id="no-results">no match</div>
+        <div id="results-container">
+          <ul id="results"></ul>
+          <div id="no-results">no match</div>
+        </div>
         <div id="hint">
           <span>↑↓</span> navigate &nbsp;<span>↵</span> open &nbsp;<span
             >esc</span
@@ -30,6 +32,25 @@
         </div>
       </div>
     </div>
-    <script src="scripts/nav.js"></script>
+    <script id="nav-config" type="application/json">
+      {
+        "pinnedUrls": [
+          "/pages/about-me.html",
+          "/pages/projects.html",
+          "/pages/thoughts.html",
+          "/pages/contacts.html",
+          "/pages/now.html",
+          "/pages/gallery.html?note-type=musings"
+        ],
+        "manualItems": [
+          {
+            "title": "musings",
+            "description": "reflections and thoughts",
+            "url": "/pages/gallery.html?note-type=musings"
+          }
+        ]
+      }
+    </script>
+    <script src="../scripts/nav.js"></script>
   </body>
 </html>
